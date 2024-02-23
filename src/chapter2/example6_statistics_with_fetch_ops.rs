@@ -12,6 +12,8 @@ pub fn example6_statistics_with_fetch_ops() {
         // Four background threads to process all 100 items
         for t in 0..4 {
             s.spawn(move || {
+                // Again, we want to move here because we want each thread to have ownership of the t variable. We don't want to share it between threads.
+                // This is why we needed to change AtomicUsize to &AtomicUsize, because we are moving it into the closure. We can't move it if it's not a reference - Atomics do not implement the Copy trait.
                 for i in 0..25 {
                     let start = Instant::now();
                     process_item(t * 25 * i);
